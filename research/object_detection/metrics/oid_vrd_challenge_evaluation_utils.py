@@ -18,6 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import csv
 import numpy as np
 from object_detection.core import standard_fields
 from object_detection.utils import vrd_evaluation
@@ -57,21 +58,18 @@ def build_groundtruth_vrd_dictionary(data, class_label_map,
   boxes['object'] = data_boxes[['YMin2', 'XMin2', 'YMax2', 'XMax2']].as_matrix()
 
   labels = np.zeros(data_boxes.shape[0], dtype=vrd_evaluation.label_data_type)
-  labels['subject'] = data_boxes['LabelName1'].map(
-      lambda x: class_label_map[x]).as_matrix()
-  labels['object'] = data_boxes['LabelName2'].map(
-      lambda x: class_label_map[x]).as_matrix()
+  labels['subject'] = data_boxes['LabelName1'].map(lambda x: class_label_map[x])
+  labels['object'] = data_boxes['LabelName2'].map(lambda x: class_label_map[x])
   labels['relation'] = data_boxes['RelationshipLabel'].map(
-      lambda x: relationship_label_map[x]).as_matrix()
+      lambda x: relationship_label_map[x])
 
   return {
       standard_fields.InputDataFields.groundtruth_boxes:
           boxes,
       standard_fields.InputDataFields.groundtruth_classes:
           labels,
-      standard_fields.InputDataFields.groundtruth_image_classes:
-          data_labels['LabelName'].map(lambda x: class_label_map[x])
-          .as_matrix(),
+      standard_fields.InputDataFields.verified_labels:
+          data_labels['LabelName'].map(lambda x: class_label_map[x]),
   }
 
 
@@ -108,12 +106,10 @@ def build_predictions_vrd_dictionary(data, class_label_map,
   boxes['object'] = data_boxes[['YMin2', 'XMin2', 'YMax2', 'XMax2']].as_matrix()
 
   labels = np.zeros(data_boxes.shape[0], dtype=vrd_evaluation.label_data_type)
-  labels['subject'] = data_boxes['LabelName1'].map(
-      lambda x: class_label_map[x]).as_matrix()
-  labels['object'] = data_boxes['LabelName2'].map(
-      lambda x: class_label_map[x]).as_matrix()
+  labels['subject'] = data_boxes['LabelName1'].map(lambda x: class_label_map[x])
+  labels['object'] = data_boxes['LabelName2'].map(lambda x: class_label_map[x])
   labels['relation'] = data_boxes['RelationshipLabel'].map(
-      lambda x: relationship_label_map[x]).as_matrix()
+      lambda x: relationship_label_map[x])
 
   return {
       standard_fields.DetectionResultFields.detection_boxes:
@@ -123,3 +119,15 @@ def build_predictions_vrd_dictionary(data, class_label_map,
       standard_fields.DetectionResultFields.detection_scores:
           data_boxes['Score'].as_matrix()
   }
+
+
+def write_csv(fid, metrics):
+  """Writes metrics key-value pairs to CSV file.
+
+  Args:
+    fid: File identifier of an opened file.
+    metrics: A dictionary with metrics to be written.
+  """
+  metrics_writer = csv.writer(fid, delimiter=',')
+  for metric_name, metric_value in metrics.items():
+    metrics_writer.writerow([metric_name, str(metric_value)])

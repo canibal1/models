@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>IMG_7633.JPG</filename>
+	<path>C:\tensorflow1\models\research\object_detection\images\train\IMG_7633.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>750</width>
+		<height>1000</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>F.O.GUNEY</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>149</xmin>
+			<ymin>209</ymin>
+			<xmax>469</xmax>
+			<ymax>623</ymax>
+		</bndbox>
+	</object>
+</annotation>
